@@ -1,4 +1,4 @@
-package com.beilers.spring;
+package test.com.beilers.testing.profile;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -13,6 +13,8 @@ import org.springframework.test.annotation.ProfileValueSource;
 public class RemoteTestingProfile implements ProfileValueSource {
 
     public static final String  SERVICE_AVAILABLE = "serviceAvailable";
+    public static final String  NO                = "no";
+    public static final String  YES               = "yes";
     private static final Logger LOGGER            = LoggerFactory.getLogger(RemoteTestingProfile.class);
 
     private Collection<Server> build() {
@@ -21,12 +23,13 @@ public class RemoteTestingProfile implements ProfileValueSource {
         return rc;
     }
 
+    @Override
     public String get(final String key) {
         String rc = "unknown";
         if (SERVICE_AVAILABLE.equals(key)) {
             rc = isAvailable();
         }
-        LOGGER.debug("Profile key [{}] had value [{}]", key, rc);
+        LOGGER.info("Profile key [{}] had value [{}]", key, rc);
         return rc;
     }
 
@@ -44,7 +47,7 @@ public class RemoteTestingProfile implements ProfileValueSource {
                 try {
                     socket.connect(endPoint, timeout);
                     LOGGER.debug("Port [{}] is availble on host [{}]", server.getPort(), server.getHostname());
-                    return "yes";
+                    return YES;
                 }
                 catch (final IOException e) {
                     LOGGER.warn("Port [{}] is unavailble on host [{}] because [{}]",
@@ -63,7 +66,7 @@ public class RemoteTestingProfile implements ProfileValueSource {
                 }
             }
         }
-        return "no";
+        return NO;
     }
 
     class Server {
